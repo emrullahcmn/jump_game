@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 4.1)
 project(MY_GAME_3 C)
 
-option(USE_SYSTEM_RAYLIB "Use prebuilt raylib instead of FetchContent" ON)
+option(USE_SYSTEM_RAYLIB "Use prebuilt raylib instead of FetchContent" OFF)
 add_executable(main main.c)
 set_target_properties(main PROPERTIES OUTPUT_NAME "jump_game")
 add_custom_command(
