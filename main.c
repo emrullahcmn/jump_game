@@ -21,15 +21,7 @@
 #define GAME_RUNNING 1
 #define GAME_OVER -1
 
-#define DEBUG
-
-float getMax(float a, float b){
-    return a > b ? a : b;
-}
-
-float getMin(float a, float b){
-    return a > b ? b : a;
-}
+//#define DEBUG
 
 #ifdef DEBUG
 #define printDebugI(a) printf("%s = %d\n", #a, a)
