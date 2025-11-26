@@ -1,6 +1,6 @@
 # jump_game
 
-jump_game is a game developed with raylib.c and c programming language.
+jump_game is a game developed with raylib.h and c programming language.
 
 ## Building the game
 
