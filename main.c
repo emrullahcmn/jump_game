@@ -177,7 +177,7 @@ int main(void)
     int rcnt = 0;
     float distToRight = 0;
     int score = 0;
-
+    SetTraceLogLevel(0);   // release
     InitWindow(screenWidth, screenHeight, "TREX JUMP GAME");
 
     SetTargetFPS(FPS); // Set our game to run at 60 frames-per-second

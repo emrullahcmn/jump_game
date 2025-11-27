@@ -4,7 +4,7 @@ jump_game is a game developed with raylib.h and c programming language.
 
 ## Building the game
 
-example cmake commands for Windows minGW
+example cmake commands for Windows MinGW
 
 ```bash
 cmake -G "MinGW Makefiles" -B build
@@ -12,6 +12,15 @@ cmake --build build
 cd build
 ./jump_game
 ```
+example cmake commands for Fedora / Linux
+
+```bash
+cmake -B build
+cmake --build build
+cd build
+./jump_game
+```
+(both of these were tested and did well)
 
 ## Some Images
 
