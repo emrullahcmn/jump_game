@@ -15,7 +15,7 @@ cd build
 example cmake commands for Fedora / Linux
 
 ```bash
-cmake -B build
+cmake -B build -DCMAKE_POLICY_VERSION_MINIMUM=4.1
 cmake --build build
 cd build
 ./jump_game
