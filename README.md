@@ -28,3 +28,4 @@ cd build
 ![running](docs/imgs/running.png)
 ![jumping](docs/imgs/jumping.png)
 ![game_over](docs/imgs/game_over.png)
+![ducking_flying](docs/imgs/ducking_flying.png)

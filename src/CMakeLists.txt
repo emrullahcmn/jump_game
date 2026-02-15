@@ -14,12 +14,13 @@ message(STATUS "Using FetchContent to download raylib")
 include(FetchContent)
 FetchContent_Declare(
     raylib
-    GIT_REPOSITORY https://github.com/raysan5/raylib.git
-    GIT_TAG 5.0
-    GIT_SHALLOW TRUE
+    URL https://github.com/raysan5/raylib/archive/refs/tags/5.5.tar.gz
 )
+set(BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
+set(BUILD_GAMES OFF CACHE BOOL "" FORCE)
+
 FetchContent_MakeAvailable(raylib)
-target_link_libraries(main PRIVATE raylib)
+target_link_libraries(main PRIVATE opengl32 raylib)
 
 if(MINGW)
     target_link_libraries(main PRIVATE winmm)
