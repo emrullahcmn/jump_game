@@ -18,7 +18,7 @@ int main(void){
     int lastestWidth = 0;
     int lastHeight = 0;
     int rcnt = 0;
-    float distToRight = 0;        // TODO: was float
+    float distToRight = 0;        
     int score = 0;
     bool ducking = false;       // NEW
 
