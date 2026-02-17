@@ -86,7 +86,8 @@ int main(void){
         activeObstacles[i].pos.x = OUT_OF_SCREEN;
     }
 
-    // active obstacles
+    // head new empty position
+    // tail oldest active obstacle if present
     int head = 0;
     int tail = 0;
 

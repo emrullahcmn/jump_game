@@ -1,8 +1,8 @@
 #ifndef GAME_FUNCTIONS_H
 #define GAME_FUNCTIONS_H
 
-#include "game_structs.h"
 #include "game_macros.h"
+#include "game_structs.h"
 #include <math.h>
 #include <stdio.h>
 
@@ -101,7 +101,6 @@ bool checkCollisionWithObstacles(ActiveObstacle *activeObstacles, Obstacle *obst
         Animation *animatedObstacle,
         int head, int tail
 ){
-    if(tail == head) return false;
 
     Vector2 playerCCenter;
     float playerCRadius;
