@@ -31,7 +31,7 @@ int main(void){
         {35, 55}
     };
     int levelCounter = 0;
-    bool levelIsHard = false;
+    bool levelIsHard = false;  
 
     // for player
     Rectangle player = {PLAYER_POSITION_X, 0, PLAYER_WIDTH, PLAYER_HEIGHT};
@@ -48,20 +48,22 @@ int main(void){
     setPlayerStandingUp(&playerAnimation, &player, &standingUpFrameRec);    // default standing up
 
     // nuclear weapon's coordinates :D
-    Collision playerStandingCollisions[5] = {
+    Collision playerStandingCollisions[PLAYER_STANDING_COLLISIONS] = {
         {{706.94-standingUpFrameRec.x, 13.38-standingUpFrameRec.y}, 9.5},
-        {{696.56-standingUpFrameRec.x, 28.31-standingUpFrameRec.y}, 8.5},
+        {{696.37-standingUpFrameRec.x, 28.13-standingUpFrameRec.y}, 8},
         {{693.56-standingUpFrameRec.x, 40-standingUpFrameRec.y}, 7},
-        {{681.66-standingUpFrameRec.x, 31.09-standingUpFrameRec.y}, 5},
-        {{678.13-standingUpFrameRec.x, 22.91-standingUpFrameRec.y}, 3.5}
+        {{680.28-standingUpFrameRec.x, 27.59-standingUpFrameRec.y}, 3.5}, 
+        {{685.77-standingUpFrameRec.x, 32.27-standingUpFrameRec.y}, 5}, 
+        {{678.06-standingUpFrameRec.x, 22.28-standingUpFrameRec.y}, 2} 
     };
-    Collision playerDuckingCollisions[6] = {
-        {{983.87-duckingFrameRec.x, 29.81-duckingFrameRec.y}, 9.5},
-        {{965.44-duckingFrameRec.x, 30.62-duckingFrameRec.y}, 9.5},
-        {{952.69-duckingFrameRec.x, 29.56-duckingFrameRec.y}, 7.5},
+    Collision playerDuckingCollisions[PLAYER_DUCKING_COLLISIONS] = {
+        {{984.44-duckingFrameRec.x, 29.56-duckingFrameRec.y}, 9},
+        {{966.12-duckingFrameRec.x, 31.50-duckingFrameRec.y}, 9.5},
+        {{950.81-duckingFrameRec.x, 30.50-duckingFrameRec.y}, 6},
         {{969.87-duckingFrameRec.x, 40.44-duckingFrameRec.y}, 3.5},
         {{956.31-duckingFrameRec.x, 41.63-duckingFrameRec.y}, 5.5},
-        {{942.31-duckingFrameRec.x, 25.06-duckingFrameRec.y}, 5}
+        {{955.92-duckingFrameRec.x, 25.11-duckingFrameRec.y}, 3},
+        {{942.31-duckingFrameRec.x, 25.06-duckingFrameRec.y}, 4}
     };
 
     // for the road
@@ -79,6 +81,9 @@ int main(void){
     bool start = true;
     bool highscoreCheck = false;
     int highestScore = -1;
+
+    // msg margin
+    int msgMargin = 40;
 
     // active obstacles
     ActiveObstacle activeObstacles[ACTIVE_OBSTACLES];
@@ -139,22 +144,25 @@ int main(void){
         .framesSpeed = 5
     };
     
-    Collision flyingObstacleFirstCollisions[6] = {
-        {{137.94-animatedObstacle.frameRec.x, 18.38-animatedObstacle.frameRec.y}, 4},
-        {{144.06-animatedObstacle.frameRec.x, 15.06-animatedObstacle.frameRec.y}, 4.5},
+    Collision flyingObstacleFirstCollisions[FLYING_OBSTACLE_COLLISIONS_FIRST] = {
+        {{137.06-animatedObstacle.frameRec.x, 18.19-animatedObstacle.frameRec.y}, 2.5},
+        {{143.38-animatedObstacle.frameRec.x, 15.06-animatedObstacle.frameRec.y}, 4.5},
         {{148.95-animatedObstacle.frameRec.x, 20-animatedObstacle.frameRec.y}, 3},
-        {{156.48-animatedObstacle.frameRec.x, 25.64-animatedObstacle.frameRec.y}, 8},
-        {{151.67-animatedObstacle.frameRec.x, 36.14-animatedObstacle.frameRec.y}, 3.5},
-        {{169.70-animatedObstacle.frameRec.x, 25.19-animatedObstacle.frameRec.y}, 6},
+        {{157.05-animatedObstacle.frameRec.x, 25.83-animatedObstacle.frameRec.y}, 7.5},
+        {{151.67-animatedObstacle.frameRec.x, 36.14-animatedObstacle.frameRec.y}, 3.25},
+        {{169.70-animatedObstacle.frameRec.x, 25.69-animatedObstacle.frameRec.y}, 5.5}
     };
-    Collision flyingObstacleSecondCollisions[6] = {
-        {{183.99-animatedObstacle.frameRec.x-animatedObstacle.frameRec.width, 18.34-animatedObstacle.frameRec.y}, 4},
-        {{190.11-animatedObstacle.frameRec.x-animatedObstacle.frameRec.width, 15.03-animatedObstacle.frameRec.y}, 4.5},
-        {{196.69-animatedObstacle.frameRec.x-animatedObstacle.frameRec.width, 8.36-animatedObstacle.frameRec.y}, 4},
-        {{195-animatedObstacle.frameRec.x-animatedObstacle.frameRec.width, 19.97-animatedObstacle.frameRec.y}, 3},
-        {{203.10-animatedObstacle.frameRec.x-animatedObstacle.frameRec.width, 20.83-animatedObstacle.frameRec.y}, 9},
-        {{215.66-animatedObstacle.frameRec.x-animatedObstacle.frameRec.width, 25.5-animatedObstacle.frameRec.y}, 6},
+    Collision flyingObstacleSecondCollisions[FLYING_OBSTACLE_COLLISIONS_SECOND] = {
+        {{182.74-animatedObstacle.frameRec.x-animatedObstacle.frameRec.width, 18.53-animatedObstacle.frameRec.y}, 2.5},
+        {{189.30-animatedObstacle.frameRec.x-animatedObstacle.frameRec.width, 15.16-animatedObstacle.frameRec.y}, 4.5},
+        {{196.69-animatedObstacle.frameRec.x-animatedObstacle.frameRec.width, 8.24-animatedObstacle.frameRec.y}, 4},
+        {{195   -animatedObstacle.frameRec.x-animatedObstacle.frameRec.width, 19.97-animatedObstacle.frameRec.y}, 3},
+        {{202.66-animatedObstacle.frameRec.x-animatedObstacle.frameRec.width, 20.89-animatedObstacle.frameRec.y}, 8.5},
+        {{210.28-animatedObstacle.frameRec.x-animatedObstacle.frameRec.width, 27.43-animatedObstacle.frameRec.y}, 3},
+       {{216.97-animatedObstacle.frameRec.x-animatedObstacle.frameRec.width, 25.31-animatedObstacle.frameRec.y}, 4.5}
     };
+
+    //  
 
     float obstacleSpeed = OBSTACLE_SPEED; // the main speed.  was -400 -1100 
 
@@ -171,6 +179,7 @@ int main(void){
     // gravity
     float gravity = 32;
 
+    // difficulty transition
     int transition = 0;
 
     // main active rectangle below the road
@@ -196,9 +205,9 @@ int main(void){
     int wdScore = MeasureText("Score: 100", smallFontSize);
     char str[100]; // for score text
 
-    // new code
+    // texture
     Texture2D trexGameSprite = LoadTexture("./resources/sprites.png");
-    SetTextureFilter(trexGameSprite, TEXTURE_FILTER_POINT);
+    
     //--------------------------------------------------------------------------------------
     // Main game loop
     while (!WindowShouldClose()) // Detect window close button or ESC key
@@ -217,38 +226,57 @@ int main(void){
 
             case GAME_RUNNING:
                 /* code */
+                // main rectangle
+                collisionDetected = 0;
+                if (CheckCollisionRecs(player, mainCollisionControlRectangle)){
+                    collisionDetected = 1;
+                    jumpSpeed = 0.f;
+                    if(!ducking) 
+                        player.y = mainCollisionControlRectangle.y - 42;
+                    else
+                        player.y = mainCollisionControlRectangle.y - 25;
+                }
+                // with obstacles
+                if (checkCollisionWithObstacles(activeObstacles, obstacles, player,
+                ducking, playerStandingCollisions, playerDuckingCollisions, flyingObstacleFirstCollisions,
+            flyingObstacleSecondCollisions, &animatedObstacle, head, tail)){  // many parameters here
+                    gameState = GAME_OVER;
+                    waitDurationCounter = 0;
+                    break;
+                }
+
                 score++;
                 if (score % 700 == 0){
                     transition = 1;
                 }
 
-                if(!ducking && collisionDetected && (IsKeyDown(KEY_DOWN) || IsKeyDown(KEY_S))){
-                    ducking = true;
-                    setPlayerDucking(&playerAnimation, &player, &duckingFrameRec);
+                if(!ducking){
+                    if(collisionDetected && (IsKeyDown(KEY_DOWN) || IsKeyDown(KEY_S))){
+                        ducking = true;
+                        setPlayerDucking(&playerAnimation, &player, &duckingFrameRec);
+                    }
+                }else{
+                    if(IsKeyReleased(KEY_DOWN) || IsKeyReleased(KEY_S)){
+                        ducking = false;
+                        setPlayerStandingUp(&playerAnimation, &player, &standingUpFrameRec);
+                    }
                 }
 
-                if(ducking && (IsKeyReleased(KEY_DOWN) || IsKeyReleased(KEY_S))){
-                    ducking = false;
-                    setPlayerStandingUp(&playerAnimation, &player, &standingUpFrameRec);
-                }
-
-
-                // this is for player
+                // player animation
                 playerAnimate(&playerAnimation, collisionDetected, &player, ducking);
-                // player sprite ends here.
-
-                // road sprite starts
+                // obstacle animation
+                obstacleAnimate(&animatedObstacle);
+                // road animation
                 roadAnimate(&roadAnimation, obstacleSpeed, frameTime);
-                // road sprite ends
-
+                // update obstacle positions
                 updateObstaclePositions(activeObstacles, obstacleSpeed, frameTime, &distToRight, &head, &tail); 
 
                 if (transition || distToRight >= recentVal){
                     if(transition){
-                        recentVal = GAME_SCREEN_WIDTH*1.5;
-                        distToRight = 0;
                         if (head == tail){  // so that all obstacles leave the screen.
                             transition = 0;
+                            recentVal = 100;  // nw
+                            distToRight = 0;    // this is independent from obstacles
                             if(obstacleSpeed > MAX_OBSTACLE_SPEED){
                                 obstacleSpeed -= 100;
                             }
@@ -265,38 +293,21 @@ int main(void){
                         makeANewObstacle(activeObstacles, obstacles, &lastestWidth, &lastHeight,  &distToRight, animatedObstacleIx, &head, &tail, levelIsHard);
                     }
                 }
-                
-                if (checkCollisionWithObstacles(activeObstacles, obstacles, player,
-                ducking, playerStandingCollisions, playerDuckingCollisions, flyingObstacleFirstCollisions,
-            flyingObstacleSecondCollisions, &animatedObstacle, head, tail)){  // many parameters here
-                    gameState = GAME_OVER;
-                    waitDurationCounter = 0;
-                }
 
-                if (collisionDetected && IsKeyDown(KEY_SPACE)){ // on stepping now
-                    jumpSpeed = -jumpPower;
-                    player.y += jumpSpeed * frameTime; // minus, rocket it up
-                    printDebugF(jumpSpeed * frameTime);
-                    jumpSpeed += gravity;
-                    if(ducking){
-                        ducking = false;
-                        setPlayerStandingUp(&playerAnimation, &player, &standingUpFrameRec);
+                if(collisionDetected){
+                    if(IsKeyDown(KEY_SPACE)){
+                        jumpSpeed = -jumpPower;
+                        player.y += jumpSpeed * frameTime; // minus, rocket it up
+                        printDebugF(jumpSpeed * frameTime);
+                        jumpSpeed += gravity;
+                        if(ducking){
+                            ducking = false;
+                            setPlayerStandingUp(&playerAnimation, &player, &standingUpFrameRec);
+                        }
                     }
-                }
-
-                if (!collisionDetected){ // on flying now
+                }else{
                     player.y += jumpSpeed * frameTime;
                     jumpSpeed += gravity;
-                }
-
-                collisionDetected = 0;
-                if (CheckCollisionRecs(player, mainCollisionControlRectangle)){
-                    collisionDetected = 1;
-                    jumpSpeed = 0.f;
-                    if(!ducking) 
-                        player.y = mainCollisionControlRectangle.y - 42;
-                    else
-                        player.y = mainCollisionControlRectangle.y - 25;
                 }
                 break;
 
@@ -322,13 +333,14 @@ int main(void){
                     player.y = 0;
                     playerAnimation.currentFrame = 0;
                     playerAnimation.framesCounter = 0;
-                    clearObstaclePositions(activeObstacles, head, tail);
+                    animatedObstacle.currentFrame = 0;
+                    animatedObstacle.framesCounter = 0;
                     obstacleSpeed = OBSTACLE_SPEED;
                     transition = 0;
                     gameState = GAME_RUNNING;
                     highscoreCheck = false;
                     levelCounter = 0;
-                    levelIsHard = false;
+                    levelIsHard = false;  
                 }
                 break;
             default:
@@ -344,25 +356,20 @@ int main(void){
 
         // text
         DrawText(TextFormat("Score: %d", score / 10), screenWidth / 2 - wdScore / 2, 20, smallFontSize, DARKGRAY);
-
         // road
         DrawTextureRec(trexGameSprite, roadAnimation.frameRec, roadPosition, WHITE);
-
-        // draw player
-        DrawTextureRec(trexGameSprite, playerAnimation.frameRec, (Vector2){player.x, player.y}, WHITE);  // GREEN
-
         // obstacles
         drawActiveObstacles(activeObstacles, obstacles, trexGameSprite, animatedObstacleIx, &animatedObstacle, gameState, head, tail); // new
+        // draw player
+        DrawTextureRec(trexGameSprite, playerAnimation.frameRec, (Vector2){player.x, player.y}, WHITE);  // GREEN
         
-        
-
-        // draw collisions
-        //#ifdef DEBUG
-        /* drawCollisions(activeObstacles, obstacles, player, ducking, 
+        // draw collisions -- debugging purposes
+        #ifdef DEBUG
+        drawCollisions(activeObstacles, obstacles, player, ducking, 
             playerStandingCollisions, playerDuckingCollisions, flyingObstacleFirstCollisions, 
-            flyingObstacleSecondCollisions, &animatedObstacle, &standingUpFrameRec); */
-        //#endif
-        int msgMargin = 40;
+            flyingObstacleSecondCollisions, &animatedObstacle, &standingUpFrameRec, head, tail);
+        #endif
+        
         switch (gameState)
         {
         case GAME_STARTING:

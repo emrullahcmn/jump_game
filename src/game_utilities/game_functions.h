@@ -6,14 +6,13 @@
 #include <math.h>
 #include <stdio.h>
 
-
 void obstacleAnimate(Animation *animation){
     animation->framesCounter++;
     if (animation->framesCounter >= (FPS / animation->framesSpeed)){
         animation->framesCounter = 0;
-        animation->frameRec.x = animation->frameRecStatic->x + animation->currentFrame * (*animation->frameRecStatic).width;
         animation->currentFrame++;
         animation->currentFrame %= 2;
+        animation->frameRec.x = animation->frameRecStatic->x + animation->currentFrame * (*animation->frameRecStatic).width;
     }
 }
 
@@ -22,18 +21,12 @@ int next(int index){
 }
 
 void updateObstaclePositions(ActiveObstacle *activeObstacles, float speed, float frameTime, float *distToRight, int *head, int *tail){
-    *distToRight -= speed * frameTime;
+    *distToRight -= speed * frameTime;  
     for (int i = *tail; i != *head; i = next(i)){
         activeObstacles[i].pos.x += speed * frameTime;  
     }
     if(activeObstacles[*tail].pos.x <= OUT_OF_SCREEN && *head != *tail){
         *tail = next(*tail);
-    }
-}
-
-void clearObstaclePositions(ActiveObstacle *activeObstacles, int head, int tail){
-    for (int i = tail; i != head; i = next(i)){
-        activeObstacles[i].pos.x = OUT_OF_SCREEN;
     }
 }
 
@@ -55,7 +48,7 @@ void makeANewObstacle(ActiveObstacle *activeObstacles, Obstacle *obstacles, int 
         index = GetRandomValue(0, 17);
     }
 
-    activeObstacles[*head].pos.x =GAME_SCREEN_WIDTH + obstacles[index].rect.width;//GAME_SCREEN_WIDTH  - obstacles[index].rect.width;   //TODO: ...
+    activeObstacles[*head].pos.x =GAME_SCREEN_WIDTH + obstacles[index].rect.width;//GAME_SCREEN_WIDTH  - obstacles[index].rect.width; 
     
     if(index >= animatedObstacleIx){
         index = animatedObstacleIx;
@@ -74,17 +67,9 @@ void makeANewObstacle(ActiveObstacle *activeObstacles, Obstacle *obstacles, int 
 void drawActiveObstacles(ActiveObstacle *activeObstacles, Obstacle *obstacles, Texture2D sprite, int animatedObstacleIx, Animation *animatedObstacle, int gameState,
 int head, int tail){
     int index;
-    bool animated = false;
-    if(activeObstacles[tail].pos.x <= OUT_OF_SCREEN){
-        return;
-    }
     for (int i = tail; i != head; i = next(i)){
         index = activeObstacles[i].index;
         if(index == animatedObstacleIx){
-            if(!animated && gameState == GAME_RUNNING){
-                obstacleAnimate(animatedObstacle);
-                animated = true;
-            }
             DrawTextureRec(sprite, animatedObstacle->frameRec, activeObstacles[i].pos, obstacles[index].color);
         }else{
             DrawTextureRec(sprite, obstacles[index].rect, activeObstacles[i].pos, obstacles[index].color);
@@ -92,15 +77,12 @@ int head, int tail){
     }
 }
 
-
-
 // tail points to left-most valid obstacle
 bool checkCollisionWithObstacles(ActiveObstacle *activeObstacles, Obstacle *obstacles, Rectangle player, bool ducking,
         Collision *playerStandingCollisions, Collision *playerDuckingCollisions,
         Collision *flyingObstacleFirstCollisions,  Collision *flyingObstacleSecondCollisions,
         Animation *animatedObstacle,
-        int head, int tail
-){
+        int head, int tail){
 
     Vector2 playerCCenter;
     float playerCRadius;
@@ -135,16 +117,18 @@ bool checkCollisionWithObstacles(ActiveObstacle *activeObstacles, Obstacle *obst
             Vector2 obstacleCCenter;
             float obstacleCRadius;
             int length = !ducking ? PLAYER_STANDING_COLLISIONS : PLAYER_DUCKING_COLLISIONS;
+            bool animatedSecond = animatedObstacle->currentFrame ? FLYING_OBSTACLE_COLLISIONS_SECOND : FLYING_OBSTACLE_COLLISIONS_FIRST;
+            int subLength = animatedSecond ? FLYING_OBSTACLE_COLLISIONS_SECOND : FLYING_OBSTACLE_COLLISIONS_FIRST;
             for(int j = 0; j<length; j++){  
 
                 playerCCenter.x = !ducking ? playerStandingCollisions[j].relativePos.x + player.x : playerDuckingCollisions[j].relativePos.x + player.x;
                 playerCCenter.y = !ducking ? playerStandingCollisions[j].relativePos.y + player.y : playerDuckingCollisions[j].relativePos.y + player.y;
                 playerCRadius = !ducking ? playerStandingCollisions[j].radius : playerDuckingCollisions[j].radius;
 
-                for(int k = 0; k<FLYING_OBSTACLE_COLLISIONS; k++){ 
-                    obstacleCCenter.x = animatedObstacle->currentFrame ? flyingObstacleFirstCollisions[k].relativePos.x + gamePos->x : flyingObstacleSecondCollisions[k].relativePos.x + gamePos->x;
-                    obstacleCCenter.y = animatedObstacle->currentFrame ? flyingObstacleFirstCollisions[k].relativePos.y + gamePos->y : flyingObstacleSecondCollisions[k].relativePos.y + gamePos->y;
-                    obstacleCRadius = animatedObstacle->currentFrame ?flyingObstacleFirstCollisions[k].radius : flyingObstacleSecondCollisions[k].radius;
+                for(int k = 0; k<subLength; k++){
+                    obstacleCCenter.x = animatedSecond ? flyingObstacleSecondCollisions[k].relativePos.x + gamePos->x : flyingObstacleFirstCollisions[k].relativePos.x + gamePos->x;
+                    obstacleCCenter.y = animatedSecond ? flyingObstacleSecondCollisions[k].relativePos.y + gamePos->y : flyingObstacleFirstCollisions[k].relativePos.y + gamePos->y;
+                    obstacleCRadius = animatedSecond ? flyingObstacleSecondCollisions[k].radius : flyingObstacleFirstCollisions[k].radius;
                     if(CheckCollisionCircles(playerCCenter, playerCRadius, obstacleCCenter, obstacleCRadius)){
                         return true;
                     }
@@ -161,12 +145,13 @@ bool checkCollisionWithObstacles(ActiveObstacle *activeObstacles, Obstacle *obst
 void drawCollisions(ActiveObstacle *activeObstacles, Obstacle *obstacles, Rectangle player, bool ducking,
         Collision *playerStandingCollisions, Collision *playerDuckingCollisions,
         Collision *flyingObstacleFirstCollisions,  Collision *flyingObstacleSecondCollisions,
-        Animation *animatedObstacle, Rectangle *standingUpFrameRec
-){
+        Animation *animatedObstacle, Rectangle *standingUpFrameRec,
+        int head, int tail){
+
     Vector2 playerCCenter;
     float playerCRadius;
     int length = !ducking ? PLAYER_STANDING_COLLISIONS : PLAYER_DUCKING_COLLISIONS;
-    for(int j = 0; j<length; j++){   // TODO: arrange this length please! with ternary. OK both is 6
+    for(int j = 0; j<length; j++){  
         playerCCenter.x = !ducking ? playerStandingCollisions[j].relativePos.x + player.x : playerDuckingCollisions[j].relativePos.x + player.x;
         playerCCenter.y = !ducking ? playerStandingCollisions[j].relativePos.y + player.y : playerDuckingCollisions[j].relativePos.y + player.y;
         playerCRadius = !ducking ? playerStandingCollisions[j].radius : playerDuckingCollisions[j].radius;
@@ -175,26 +160,28 @@ void drawCollisions(ActiveObstacle *activeObstacles, Obstacle *obstacles, Rectan
 
     Rectangle obstacleRect;
     Vector2 gamePos;
-    for (int i = 0; i < ACTIVE_OBSTACLES; i++){
+    for (int i = tail; i != head; i = next(i)){
         int index = activeObstacles[i].index;
         Vector2 gamePos = activeObstacles[i].pos;
-        if (gamePos.x > OUT_OF_SCREEN){
-            if(index != FLYING_OBSTACLE_INDEX){        // not flying
-                obstacleRect = (Rectangle){gamePos.x, gamePos.y, obstacles[index].rect.width, obstacles[index].rect.height};
-                DrawRectangleRec(obstacleRect, GREEN);
-            }else{
-                // flying obstacle stuff here
-                Vector2 obstacleCCenter;
-                float obstacleCRadius;
-                for(int k = 0; k<FLYING_OBSTACLE_COLLISIONS; k++){
-                    obstacleCCenter.x = animatedObstacle->currentFrame ? flyingObstacleFirstCollisions[k].relativePos.x + gamePos.x : flyingObstacleSecondCollisions[k].relativePos.x + gamePos.x;
-                    obstacleCCenter.y = animatedObstacle->currentFrame ? flyingObstacleFirstCollisions[k].relativePos.y + gamePos.y : flyingObstacleSecondCollisions[k].relativePos.y + gamePos.y;
-                    obstacleCRadius = animatedObstacle->currentFrame ?flyingObstacleFirstCollisions[k].radius : flyingObstacleSecondCollisions[k].radius;
-                    DrawCircleV(obstacleCCenter, obstacleCRadius, PINK);
-                }
-                
+        if(index != FLYING_OBSTACLE_INDEX){        // not flying
+            obstacleRect = (Rectangle){gamePos.x, gamePos.y, obstacles[index].rect.width, obstacles[index].rect.height};
+            DrawRectangleRec(obstacleRect, GREEN);
+        }else{
+            // flying obstacle stuff here
+            Vector2 obstacleCCenter;
+            float obstacleCRadius;
+            int length = animatedObstacle->currentFrame ? FLYING_OBSTACLE_COLLISIONS_SECOND : FLYING_OBSTACLE_COLLISIONS_FIRST;
+            bool animatedSecond = animatedObstacle->currentFrame ? FLYING_OBSTACLE_COLLISIONS_SECOND : FLYING_OBSTACLE_COLLISIONS_FIRST;
+
+            for(int k = 0; k<length; k++){
+                obstacleCCenter.x = animatedSecond ? flyingObstacleSecondCollisions[k].relativePos.x + gamePos.x : flyingObstacleFirstCollisions[k].relativePos.x + gamePos.x;
+                obstacleCCenter.y = animatedSecond ? flyingObstacleSecondCollisions[k].relativePos.y + gamePos.y : flyingObstacleFirstCollisions[k].relativePos.y + gamePos.y;
+                obstacleCRadius = animatedSecond ? flyingObstacleSecondCollisions[k].radius : flyingObstacleFirstCollisions[k].radius;
+                DrawCircleV(obstacleCCenter, obstacleCRadius, PINK);
             }
+            
         }
+        
     }
 }
 
@@ -207,7 +194,7 @@ float findLandingDistance(float speed, float gravity, float jumpSpeed, float fra
     int t = (int)ceilf(jumpSpeed / gravity);
 
     int rndval = GetRandomValue(level->start, level->end); 
-    if(levelIsHard) t /= 2;
+    if(levelIsHard) t /= 1.5;
 
     return (t + FPS * rndval / 100.f) * speed * frameTime + lastHeight;
 }
@@ -243,8 +230,6 @@ void playerAnimate(Animation *animation, int collisionDetected, Rectangle *playe
         }
     }
 }
-
-
 
 void modifyAnimationInformation(Animation *playerAnimation, Rectangle *player, Rectangle *xingFrameRec){
     playerAnimation->frameRecStatic = xingFrameRec;
